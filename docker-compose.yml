@@ -1,0 +1,32 @@
+version: '3.3'
+
+services:
+
+  web:
+    container_name: php
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - '3000:80'
+    volumes:
+      - ./site/code:/var/www/html
+      - ./site/php/php.ini/:/usr/local/etc/php/php.ini
+    links:
+      - db
+    
+
+  db:
+    container_name: mariadb
+    image: mariadb
+    restart: always
+    ports:
+      - '9906:3306'
+    environment:
+      - MARIADB_DATABASE=usuario
+      - MARIADB_USER=usuario      
+      - MARIADB_ALLOW_EMPTY_ROOT_PASSWORD=yes
+        #- MYSQL_TCP_PORT=3307
+    volumes:
+      - ./site/db/mariadb.cnf:/etc/mysql/conf.d/mariadb.cnf
+      - ./site/db/db.sql:/docker-entrypoint-initdb.d/db.sql
